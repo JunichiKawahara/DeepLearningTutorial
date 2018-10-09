@@ -58,9 +58,22 @@ def cross_entropy_error(y, t):
     u"""
     交差エントロピー誤差
     """
-    if y.dim == 1:
+    if y.ndim == 1:
         t = t.reshape(1, t.size)
         y = y.reshape(1, y.size)
-    
+
+    # 教師データがone-hot-vectorの場合、正解ラベルのインデックスに変換する
+    if t.size == y.size:
+        t = t.argmax(axis=1)
+
     batch_size = y.shape[0]
     return -np.sum(np.log(y[np.arange(batch_size), t] + 1e-7)) / batch_size
+
+
+def numerical_diff(f, x):
+    u"""
+    数値微分
+    """
+    h = 1e-4    # 0.0001
+    return (f(x + h) - f(x - h)) / (2 * h)
+
